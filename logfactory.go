@@ -147,9 +147,9 @@ func (lf *logFactory) Contexts() map[string]slf.StructuredLogger {
 	return res
 }
 
-// SetConcurrent toggles concurrency in handling log messages. If concurrent (default), the
-// output sequence of entries is not guaranteed to be the same as log entries input sequence,
-// although the timestamp will correspond the time of logging, not handling.
+// SetConcurrent toggles concurrency in handling log messages. If concurrent, the output sequence
+// of entries is not guaranteed to be the same as log entries input sequence, although the
+// timestamp will correspond the time of logging, not handling. Default: not concurrent.
 func (lf *logFactory) SetConcurrent(conc bool) {
 	lf.concurrent = conc
 }

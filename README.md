@@ -26,6 +26,10 @@ The factory API is fairly straightforward and self explanatory. It is based on t
         // context given, or the root logger when context defined as "root".
         SetLevel(level slf.Level, contexts ...string)
 
+        // SetCallerInfo sets the logging slf.CallerInfo to given contexts, all loggers if no context given,
+        // or the root logger when context defined as "root".
+        SetCallerInfo(callerInfo slf.CallerInfo, contexts ...string)
+
         // AddEntryHandler adds a handler for log entries that are logged at or above 
         // the set log slf.Level.
         AddEntryHandler(handler EntryHandler)
@@ -38,7 +42,7 @@ The factory API is fairly straightforward and self explanatory. It is based on t
         Contexts() map[string]slf.StructuredLogger
 
         // SetConcurrent toggles concurrent execution of handler methods on log entries. 
-        // Default is to log each entry with each handler in a separate goroutine.
+        // Default is to log each entry non-concurrently, one after another.
         SetConcurrent(conc bool)
     }
 
@@ -88,6 +92,17 @@ Given the above setup the log output of the application can look like this:
         17:41:14.551 [WARN] probe.agent.task.Subscribe: Error while subscribing. Retrying in 30s (error: read: connection reset by peer)
 
 	 ![Basic output example][coloured]
+
+##  Changelog
+
+* 26.03.2016: Initial release
+* 30.04.2016:
+    * API: Added `Fatal` and `Fatalf` (matches SLF)
+    * API: Added `SetCallerInfo` as the top-level initialization for all or selected loggers
+    * Behaviour: `concurrent=false` by default
+    * Fix: `Log(LevelPanic, ...)` triggers panic just as `Panic` and `Panicf`
+    * Fix: Stopped JSON handler from outputting `error: "null"` on no error
+
 
 ## License
 
