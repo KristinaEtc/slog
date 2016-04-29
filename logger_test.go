@@ -168,6 +168,54 @@ func TestLogger_panicf_success(t *testing.T) {
 	}
 }
 
+func TestLogger_fatal_success(t *testing.T) {
+	th := &testhandler{}
+	lf := slog.New()
+	lf.AddEntryHandler(th)
+	lf.SetConcurrent(false)
+
+	triggered := false
+	slog.ExitProcessor = func(message string) {
+		if message != "cause fatal" {
+			t.Error("cause fatal expected")
+		}
+		triggered = true
+	}
+
+	lf.WithContext("test").Fatal("cause fatal")
+
+	if th.entries[0].Message() != "cause fatal" {
+		t.Error("mesage not preserved")
+	}
+	if !triggered {
+		t.Error("ExitProcessor not triggered")
+	}
+}
+
+func TestLogger_fatalf_success(t *testing.T) {
+	th := &testhandler{}
+	lf := slog.New()
+	lf.AddEntryHandler(th)
+	lf.SetConcurrent(false)
+
+	triggered := false
+	slog.ExitProcessor = func(message string) {
+		if message != "cause fatal" {
+			t.Error("cause fatal expected")
+		}
+		triggered = true
+	}
+
+	lf.WithContext("test").Fatalf("cause %v", "fatal")
+
+	if th.entries[0].Message() != "cause fatal" {
+		t.Error("mesage not preserved")
+	}
+	if !triggered {
+		t.Error("ExitProcessor not triggered")
+	}
+}
+
 func TestLogger_trace_success(t *testing.T) {
 	th := &testhandler{}
 	lf := slog.New()

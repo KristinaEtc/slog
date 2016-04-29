@@ -20,6 +20,7 @@ const (
 type LogFactory interface {
 	slf.LogFactory
 	SetLevel(level slf.Level, contexts ...string)
+	SetCallerInfo(callerInfo slf.CallerInfo, contexts ...string)
 	AddEntryHandler(handler EntryHandler)
 	SetEntryHandlers(handlers ...EntryHandler)
 	Contexts() map[string]slf.StructuredLogger
@@ -31,10 +32,12 @@ func New() LogFactory {
 	res := &logFactory{
 		root: rootLogger{
 			minlevel: slf.LevelInfo,
-			caller:   slf.CallerNone,
+			// essentially undefined: every logger that does not have it set (even to None)
+			// should consult the root logger
+			caller: slf.CallerInfo(-1),
 		},
 		contexts:   make(map[string]*logger),
-		concurrent: true,
+		concurrent: false,
 	}
 	res.root.factory = res
 	return res

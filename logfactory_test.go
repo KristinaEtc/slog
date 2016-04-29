@@ -102,3 +102,58 @@ func TestLogger_addEntryHandlers_success(t *testing.T) {
 		t.Error("3 entries expected")
 	}
 }
+
+func TestLogger_setCallerInfoWithoutContext_resetsExistingAndRoot_success(t *testing.T) {
+	th := &testhandler{}
+	lf := slog.New()
+	lf.AddEntryHandler(th)
+	lf.SetConcurrent(false)
+
+	logger := lf.WithContext("test0")
+	logger.Info("message")
+	if th.entries[0].Fields()[slog.CallerField] != nil {
+		t.Error("unexpected caller")
+	}
+
+	th.entries = nil
+	// resets all, of the above logger and for the newly created ones
+	lf.SetCallerInfo(slf.CallerShort)
+	// this logger is affected
+	logger.Info("info")
+	if th.entries[0].Fields()[slog.CallerField] == nil {
+		t.Error("caller expected")
+	}
+
+	th.entries = nil
+	// this new logger is also affected
+	logger = lf.WithContext("test1")
+	logger.Info("info")
+	if th.entries[0].Fields()[slog.CallerField] == nil {
+		t.Error("caller expected")
+	}
+}
+
+func TestLogger_setCallerInfoWithContexts_success(t *testing.T) {
+	th := &testhandler{}
+	lf := slog.New()
+	lf.AddEntryHandler(th)
+	lf.SetConcurrent(false)
+
+	logger1 := lf.WithContext("test1")
+	logger2 := lf.WithContext("test2")
+	lf.SetCallerInfo(slf.CallerShort, "test1", "root")
+	logger1.Info("info1")
+	logger2.Info("info2")
+	logger3 := lf.WithContext("test3")
+	logger3.Info("info3")
+	if th.entries[0].Fields()[slog.CallerField] == nil {
+		t.Error("caller expected for logger1")
+	}
+	if th.entries[1].Fields()[slog.CallerField] != nil {
+		t.Error("unexpected caller for logger2")
+	}
+	if th.entries[2].Fields()[slog.CallerField] == nil {
+		t.Error("caller expected for logger3")
+	}
+
+}

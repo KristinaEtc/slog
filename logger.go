@@ -11,7 +11,6 @@ import (
 	"path"
 	"runtime"
 	"time"
-	"os"
 )
 
 const (
@@ -30,6 +29,11 @@ const (
 var (
 	noop  = &slf.Noop{}
 	epoch = time.Time{}
+
+	// ExitProcessor is executed on Log(LevelFatal) to terminate the application.
+	ExitProcessor = func(message string) {
+		stdlog.Fatal(message)
+	}
 )
 
 // rootLogger represents a root logger for a context, all other loggers in the same context
@@ -149,25 +153,21 @@ func (log *logger) Errorf(format string, args ...interface{}) slf.Tracer {
 // Panic implements the Logger interface.
 func (log *logger) Panic(message string) {
 	log.log(slf.LevelPanic, message)
-	panic(errors.New(message))
 }
 
 // Panicf implements the Logger interface.
 func (log *logger) Panicf(format string, args ...interface{}) {
 	log.logf(format, slf.LevelPanic, args...)
-	panic(fmt.Errorf(format, args...))
 }
 
 // Fatal implements the Logger interface.
 func (log *logger) Fatal(message string) {
 	log.log(slf.LevelFatal, message)
-	os.Exit(1)
 }
 
 // Fatalf implements the Logger interface.
 func (log *logger) Fatalf(format string, args ...interface{}) {
 	log.logf(format, slf.LevelFatal, args...)
-	os.Exit(1)
 }
 
 // Log implements the Logger interface.
@@ -190,6 +190,11 @@ func (log *logger) checkedlog(level slf.Level, message string) slf.Tracer {
 	log.handleall(log.entry(level, message, 4, log.err))
 	log.lasttouch = time.Now()
 	log.lastlevel = level
+	if level == slf.LevelPanic {
+		panic(errors.New(message))
+	} else if level == slf.LevelFatal {
+		ExitProcessor(message)
+	}
 	return log
 }
 
@@ -210,9 +215,13 @@ func (log *logger) entry(level slf.Level, message string, skip int, err error) *
 	for key, value := range log.fields {
 		fields[key] = value
 	}
-	if log.caller == slf.CallerLong || log.caller == slf.CallerShort {
+	caller := log.caller
+	if caller < slf.CallerNone {
+		caller = log.rootLogger.caller
+	}
+	if caller == slf.CallerLong || caller == slf.CallerShort {
 		if _, file, line, ok := runtime.Caller(skip); ok {
-			if log.caller == slf.CallerShort {
+			if caller == slf.CallerShort {
 				file = path.Base(file)
 			}
 			fields[CallerField] = fmt.Sprintf("%s:%d", file, line)
