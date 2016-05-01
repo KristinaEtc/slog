@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"github.com/ventu-io/slf"
 	stdlog "log"
+	"os"
 	"path"
 	"runtime"
 	"time"
@@ -32,7 +33,7 @@ var (
 
 	// ExitProcessor is executed on Log(LevelFatal) to terminate the application.
 	ExitProcessor = func(message string) {
-		stdlog.Fatal(message)
+		os.Exit(1)
 	}
 )
 
