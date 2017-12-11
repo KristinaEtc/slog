@@ -6,7 +6,7 @@ package slog
 import (
 	"errors"
 	"fmt"
-	"github.com/ventu-io/slf"
+	"github.com/KristinaEtc/slf"
 	stdlog "log"
 	"os"
 	"path"

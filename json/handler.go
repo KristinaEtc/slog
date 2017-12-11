@@ -7,8 +7,8 @@ package json
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/ventu-io/slf"
-	"github.com/ventu-io/slog"
+	"github.com/KristinaEtc/slf"
+	"github.com/KristinaEtc/slog"
 	"io"
 )
 

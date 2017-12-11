@@ -5,9 +5,9 @@ package basic_test
 
 import (
 	"errors"
-	"github.com/ventu-io/slf"
-	"github.com/ventu-io/slog"
-	"github.com/ventu-io/slog/basic"
+	"github.com/KristinaEtc/slf"
+	"github.com/KristinaEtc/slog"
+	"github.com/KristinaEtc/slog/basic"
 	"strings"
 	"testing"
 	"time"

@@ -4,7 +4,7 @@
 package slog
 
 import (
-	"github.com/ventu-io/slf"
+	"github.com/KristinaEtc/slf"
 	"strings"
 	"sync"
 )

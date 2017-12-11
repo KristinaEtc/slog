@@ -12,8 +12,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ventu-io/slf"
-	"github.com/ventu-io/slog"
+	"github.com/KristinaEtc/slf"
+	"github.com/KristinaEtc/slog"
 )
 
 func TestLogger_genericLog_success(t *testing.T) {

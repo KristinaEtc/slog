@@ -9,8 +9,8 @@ package basic
 
 import (
 	"fmt"
-	"github.com/ventu-io/slf"
-	"github.com/ventu-io/slog"
+	"github.com/KristinaEtc/slf"
+	"github.com/KristinaEtc/slog"
 	"io"
 	"os"
 	"sort"

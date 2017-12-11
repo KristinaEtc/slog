@@ -6,9 +6,9 @@ package json_test
 import (
 	"bytes"
 	"fmt"
-	"github.com/ventu-io/slf"
-	"github.com/ventu-io/slog"
-	"github.com/ventu-io/slog/json"
+	"github.com/KristinaEtc/slf"
+	"github.com/KristinaEtc/slog"
+	"github.com/KristinaEtc/slog/json"
 	"strings"
 	"testing"
 	"time"
